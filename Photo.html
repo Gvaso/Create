@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ფოტო გალერეა - ჩამოტვირთვა</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #1a2a6c, #2a3c8c);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .upload-section {
+            padding: 30px;
+            border-bottom: 2px solid #eaeaea;
+        }
+        
+        .upload-box {
+            border: 3px dashed #1a2a6c;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            background-color: #f8f9fa;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-box:hover {
+            background-color: #edf2f7;
+            border-color: #2a3c8c;
+        }
+        
+        .upload-icon {
+            font-size: 60px;
+            color: #1a2a6c;
+            margin-bottom: 15px;
+        }
+        
+        .upload-btn {
+            background-color: #1a2a6c;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            display: inline-block;
+        }
+        
+        .upload-btn:hover {
+            background-color: #2a3c8c;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .gallery-section {
+            padding: 30px;
+        }
+        
+        .gallery-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .gallery-title {
+            font-size: 1.8rem;
+            color: #1a2a6c;
+        }
+        
+        .delete-all-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .delete-all-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: white;
+            position: relative;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .photo-container {
+            height: 200px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+        }
+        
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-info {
+            padding: 15px;
+        }
+        
+        .photo-name {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #333;
+        }
+        
+        .photo-size {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .photo-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .download-btn {
+            flex: 1;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .download-btn:hover {
+            background-color: #219653;
+        }
+        
+        .delete-btn {
+            width: 40px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .empty-gallery {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-gallery i {
+            font-size: 80px;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eaeaea;
+            margin-top: 30px;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #1a2a6c;
+        }
+        
+        .instructions h3 {
+            color: #1a2a6c;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .gallery-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 10px;
+            }
+            
+            header, .upload-section, .gallery-section {
+                padding: 20px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-camera"></i> ფოტო გალერეა</h1>
+            <p class="subtitle">ატვირთეთ და ჩამოტვირთეთ ფოტოები - ემაილი და ნომრის გარეშე</p>
+        </header>
+        
+        <section class="upload-section">
+            <h2><i class="fas fa-cloud-upload-alt"></i> ფოტოების ატვირთვა</h2>
+            
+            <div class="instructions">
+                <h3>ინსტრუქცია:</h3>
+                <ol>
+                    <li>დააჭირეთ ღილაკს "აირჩიეთ ფოტოები" ან გადმოიტანეთ ფოტოები ცისფერ არეში</li>
+                    <li>ფოტოები ავტომატურად გამოჩნდება გალერეაში</li>
+                    <li>ნებისმიერი ფოტოს გადმოსაწერად დააჭირეთ "ჩამოტვირთვა" ღილაკს</li>
+                    <li>ფოტოს წასაშლელად დააჭირეთ წითელ ღილაკს (X)</li>
+                </ol>
+            </div>
+            
+            <div class="upload-box" id="uploadBox">
+                <div class="upload-icon">
+                    <i class="fas fa-images"></i>
+                </div>
+                <h3>გადმოიტანეთ ფოტოები აქ</h3>
+                <p>ან დააჭირეთ ღილაკს ფოტოების ასარჩევად</p>
+                <p><small>მხარდაჭერილი ფორმატები: JPG, PNG, GIF, WEBP</small></p>
+                <input type="file" class="file-input" id="fileInput" accept="image/*" multiple>
+                <button class="upload-btn" id="uploadBtn"><i class="fas fa-folder-open"></i> აირჩიეთ ფოტოები</button>
+            </div>
+            
+            <div id="fileStatus"></div>
+        </section>
+        
+        <section class="gallery-section">
+            <div class="gallery-controls">
+                <h2 class="gallery-title"><i class="fas fa-th"></i> ფოტო გალერეა</h2>
+                <button class="delete-all-btn" id="deleteAllBtn"><i class="fas fa-trash"></i> ყველა ფოტოს წაშლა</button>
+            </div>
+            
+            <div class="gallery" id="gallery">
+                <!-- ფოტოები გამოჩნდება აქ JavaScript-ით -->
+                <div class="empty-gallery" id="emptyGallery">
+                    <i class="fas fa-images"></i>
+                    <h3>გალერეა ცარიელია</h3>
+                    <p>ატვირთეთ ფოტოები ზემოთ მოცემული ველის გამოყენებით</p>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>© 2026 ფოტო გალერეა. ყველა უფლება დაცულია.</p>
+            <p>ეს ვებსაიტი არ ითხოვს რეგისტრაციას და მუშაობს სრულიად თქვენს ბრაუზერში.</p>
+        </footer>
+    </div>
+
+    <script>
+        // ეს არის სრული HTML ფაილი, რომელიც მუშაობს ბრაუზერში
+        // ყველა ფოტო ინახება ბრაუზერის მეხსიერებაში (IndexedDB)
+        
+        // DOM ელემენტები
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadBox = document.getElementById('uploadBox');
+        const gallery = document.getElementById('gallery');
+        const emptyGallery = document.getElementById('emptyGallery');
+        const deleteAllBtn = document.getElementById('deleteAllBtn');
+        const fileStatus = document.getElementById('fileStatus');
+        
+        // ფოტოების მასივი (ინახება მხოლოდ სესიის განმავლობაში)
+        let photos = [];
+        
+        // ლოკალური მეხსიერებიდან ფოტოების ჩატვირთვა (თუ არის)
+        loadPhotosFromStorage();
+        
+        // ატვირთვის ღილაკის ფუნქციონალი
+        uploadBtn.addEventListener('click', () => fileInput.click());
+        uploadBox.addEventListener('click', () => fileInput.click());
+        
+        // ფაილების ატვირთვის დრაგ & დროპის ფუნქციონალი
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.style.backgroundColor = '#e3f2fd';
+            uploadBox.style.borderColor = '#1565c0';
+        });
+        
+        uploadBox.addEventListener('dragleave', () => {
+            uploadBox.style.backgroundColor = '#f8f9fa';
+            uploadBox.style.borderColor = '#1a2a6c';
+        });
+        
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.style.backgroundColor = '#f8f9fa';
+            uploadBox.style.borderColor = '#1a2a6c';
+            
+            if (e.dataTransfer.files.length) {
+                handleFiles(e.dataTransfer.files);
+            }
+        });
+        
+        // ფაილების არჩევისას
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                handleFiles(fileInput.files);
+            }
+        });
+        
+        // ყველა ფოტოს წაშლა
+        deleteAllBtn.addEventListener('click', () => {
+            if (photos.length === 0) {
+                showStatus('გალერეა უკვე ცარიელია', 'info');
+                return;
+            }
+            
+            if (confirm(`ნამდვილად გსურთ ყველა ფოტოს წაშლა? (${photos.length} ფოტო)`)) {
+                photos = [];
+                savePhotosToStorage();
+                renderGallery();
+                showStatus('ყველა ფოტო წაიშალა', 'success');
+            }
+        });
+        
+        // ფაილების დამუშავების ფუნქცია
+        function handleFiles(files) {
+            const validFiles = [];
+            const invalidFiles = [];
+            
+            // ფაილების ვალიდაცია
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                // შევამოწმოთ არის თუ არა ფოტო
+                if (!file.type.startsWith('image/')) {
+                    invalidFiles.push(file.name);
+                    continue;
+                }
+                
+                // შევამოწმოთ ფაილის ზომა (მაქსიმუმ 10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    invalidFiles.push(`${file.name} (ზომა ძალიან დიდია: ${formatFileSize(file.size)})`);
+                    continue;
+                }
+                
+                validFiles.push(file);
+            }
+            
+            // შეტყობინებები არავალიდური ფაილების შესახებ
+            if (invalidFiles.length > 0) {
+                showStatus(`შემდეგი ფაილები არ აიტვირთა: ${invalidFiles.join(', ')}`, 'error');
+            }
+            
+            // ვალიდური ფაილების დამუშავება
+            if (validFiles.length > 0) {
+                processValidFiles(validFiles);
+            }
+        }
+        
+        // ვალიდური ფაილების დამუშავება
+        function processValidFiles(files) {
+            let processedCount = 0;
+            
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // შევქმნათ ახალი ფოტო ობიექტი
+                    const photo = {
+                        id: Date.now() + index, // უნიკალური ID
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        dataUrl: e.target.result, // ფოტოს მონაცემები Base64 ფორმატში
+                        timestamp: new Date().toLocaleString('ka-GE')
+                    };
+                    
+                    // დავამატოთ ფოტოების სიაში
+                    photos.push(photo);
+                    processedCount++;
+                    
+                    // თუ ყველა ფაილი დამუშავდა
+                    if (processedCount === files.length) {
+                        // შევინახოთ ლოკალურ მეხსიერებაში
+                        savePhotosToStorage();
+                        
+                        // გალერეის განახლება
+                        renderGallery();
+                        
+                        // შეტყობინების ჩვენება
+                        showStatus(`${files.length} ფოტო წარმატებით აიტვირთა!`, 'success');
+                        
+                        // ფაილის ინფუთის გასუფთავება
+                        fileInput.value = '';
+                    }
+                };
+                
+                reader.onerror = function() {
+                    processedCount++;
+                    console.error(`ფაილის წაკითხვა ვერ მოხერხდა: ${file.name}`);
+                    
+                    if (processedCount === files.length) {
+                        renderGallery();
+                    }
+                };
+                
+                // ფაილის წაკითხვა Base64 ფორმატში
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // გალერეის გენერირების ფუნქცია
+        function renderGallery() {
+            // ცარიელი გალერეის მდგომარეობის შემოწმება
+            if (photos.length === 0) {
+                emptyGallery.style.display = 'block';
+                gallery.innerHTML = '';
+                gallery.appendChild(emptyGallery);
+                return;
+            }
+            
+            emptyGallery.style.display = 'none';
+            
+            // გალერეის გასუფთავება
+            gallery.innerHTML = '';
+            
+            // ფოტოების დამატება გალერეაში
+            photos.forEach(photo => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.dataset.id = photo.id;
+                
+                galleryItem.innerHTML = `
+                    <div class="photo-container">
+                        <img src="${photo.dataUrl}" alt="${photo.name}" loading="lazy">
+                    </div>
+                    <div class="photo-info">
+                        <h3 class="photo-name">${photo.name}</h3>
+                        <p class="photo-size">${formatFileSize(photo.size)} • ${photo.timestamp}</p>
+                        <div class="photo-actions">
+                            <a href="${photo.dataUrl}" download="${photo.name}" class="download-btn">
+                                <i class="fas fa-download"></i> ჩამოტვირთვა
+                            </a>
+                            <button class="delete-btn" data-id="${photo.id}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                gallery.appendChild(galleryItem);
+            });
+            
+            // წაშლის ღილაკების მიბმა
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const photoId = parseInt(this.dataset.id);
+                    deletePhoto(photoId);
+                });
+            });
+        }
+        
+        // ფოტოს წაშლის ფუნქცია
+        function deletePhoto(id) {
+            // ფოტოს პოვნა
+            const photoIndex = photos.findIndex(photo => photo.id === id);
+            
+            if (photoIndex !== -1) {
+                const photoName = photos[photoIndex].name;
+                
+                // წაშლა მასივიდან
+                photos.splice(photoIndex, 1);
+                
+                // შენახვა ლოკალურ მეხსიერებაში
+                savePhotosToStorage();
+                
+                // გალერეის განახლება
+                renderGallery();
+                
+                // შეტყობინება
+                showStatus(`ფოტო "${photoName}" წაიშალა`, 'success');
+            }
+        }
+        
+        // ფოტოების შენახვა ბრაუზერის მეხსიერებაში
+        function savePhotosToStorage() {
+            try {
+                // ვინახავთ მხოლოდ 20 უახლეს ფოტოს (მეხსიერების დასაზოგად)
+                const photosToSave = photos.slice(-20);
+                localStorage.setItem('photoGallery', JSON.stringify(photosToSave));
+            } catch (e) {
+                console.error('ფოტოების შენახვა ვერ მოხერხდა:', e);
+            }
+        }
+        
+        // ფოტოების ჩატვირთვა ბრაუზერის მეხსიერებიდან
+        function loadPhotosFromStorage() {
+            try {
+                const savedPhotos = localStorage.getItem('photoGallery');
+                if (savedPhotos) {
+                    photos = JSON.parse(savedPhotos);
+                    renderGallery();
+                }
+            } catch (e) {
+                console.error('ფოტოების ჩატვირთვა ვერ მოხერხდა:', e);
+            }
+        }
+        
+        // შეტყობინებების ჩვენების ფუნქცია
+        function showStatus(text, type) {
+            fileStatus.innerHTML = '';
+            
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = `
+                <p><i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${text}</p>
+            `;
+            
+            // სტილების დამატება
+            statusDiv.style.cssText = `
+                padding: 12px 20px;
+                border-radius: 5px;
+                margin: 15px 0;
+                background-color: ${type === 'success' ? '#d4edda' : type === 'error' ? '#f8d7da' : '#d1ecf1'};
+                color: ${type === 'success' ? '#155724' : type === 'error' ? '#721c24' : '#0c5460'};
+                border: 1px solid ${type === 'success' ? '#c3e6cb' : type === 'error' ? '#f5c6cb' : '#bee5eb'};
+            `;
+            
+            fileStatus.appendChild(statusDiv);
+            
+            // შეტყობინების ავტომატურად დამალვა 5 წამის შემდეგ
+            setTimeout(() => {
+                statusDiv.style.opacity = '0';
+                statusDiv.style.transition = 'opacity 0.5s';
+                setTimeout(() => {
+                    if (statusDiv.parentNode) {
+                        statusDiv.parentNode.removeChild(statusDiv);
+                    }
+                }, 500);
+            }, 5000);
+        }
+        
+        // ფაილის ზომის ფორმატირების ფუნქცია
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 ბაიტი';
+            
+            const k = 1024;
+            const sizes = ['ბაიტი', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // გალერეის საწყისი ჩატვირთვა
+        renderGallery();
+    </script>
+</body>
+</html>
