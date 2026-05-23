@@ -90,9 +90,32 @@
     @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes bounce { 0%,100%{ transform:translateX(-50%) translateY(0); } 50%{ transform:translateX(-50%) translateY(-10px); } }
     @keyframes wheel { 0%{ opacity:1; top:6px; } 80%{ opacity:0.3; top:26px; } 100%{ opacity:0; top:30px; } }
+    
     @media (max-width: 768px) {
-      .nav-links { position: fixed; top: 70px; left: 0; right: 0; background: rgba(8,7,7,0.98); backdrop-filter: blur(20px); flex-direction: column; align-items: center; gap: 20px; padding: 30px 0; transform: translateY(-200%); transition: transform 0.3s; border-bottom: 1px solid var(--gold); z-index: 999; }
-      .nav-links.show { transform: translateY(0); }
+      .nav-links { 
+        position: absolute; 
+        top: 100%; 
+        left: 0; 
+        right: 0; 
+        background: rgba(8,7,7,0.98); 
+        backdrop-filter: blur(20px); 
+        flex-direction: column; 
+        align-items: center; 
+        gap: 20px; 
+        padding: 30px 0; 
+        border-bottom: 1px solid var(--gold); 
+        z-index: 999;
+        /* შეცვლილია ანიმაცია, რათა მობილურზე არ გაიჭედოს */
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-15px);
+        transition: all 0.3s ease;
+      }
+      .nav-links.show { 
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
       .menu-toggle { display: block; }
       .lang-switch { margin-left: 10px; }
       .section-title { font-size: 2.4rem; }
@@ -152,7 +175,6 @@
   <script>
     (function() {
       "use strict";
-      // ----- TRANSLATIONS (UI + reviews, no rating number) -----
       const translations = {
         ka: {
           nav_home: "მთავარი", nav_menu: "მენიუ", nav_about: "ჩვენს შესახებ", nav_reviews: "შეფასებები", nav_location: "ლოკაცია", nav_contact: "კონტაქტი",
@@ -192,7 +214,6 @@
         }
       };
 
-      // ---------- FULL MENU DATA (Georgian original with original image filenames) ----------
       const menuItemsData = [
         { id: 'fish', cat: 'fish', name: 'თევზეულობა', desc: 'თევზეულობის სექცია', price: '', popular: false, img: 'თევზი.png', subItems: [{ name: 'ქაფშია შებრაწული', size: '', price: '15.00 ₾' },{ name: 'ბარაბულკა', size: '', price: '25.00 ₾' },{ name: 'სტავრიდა', size: '', price: '18.00 ₾' },{ name: 'სარღანი', size: '', price: '26.00 ₾' },{ name: 'კეფალი', size: '', price: '17.00 ₾' },{ name: 'კალმახი', size: '', price: '20.00 ₾' },{ name: 'დორადო', size: '', price: '40.00 ₾' },{ name: 'სიბასი', size: '', price: '40.00 ₾' },{ name: 'კამბალა', size: '', price: '60.00 ₾' },{ name: 'ზუთხის მწვადი მაყალზე', size: '', price: '60.00 ₾' },{ name: 'ორაგული შემწვარი', size: '', price: '25.00 ₾' },{ name: 'ლოქოს მწვადი', size: '', price: '45.00 ₾' },{ name: 'ლოქო ქინძმარში', size: '', price: '40.00 ₾' },{ name: 'თევზის დაფა', size: '', price: '150.00 ₾' },{ name: 'კალმარი', size: '', price: '15.00 ₾' },{ name: 'კრევეტები', size: '', price: '25.00 ₾' }] },
         { id: 'dough', cat: 'dough', name: 'ცომეულობა', desc: 'ცომეულობის სექცია', price: '', popular: true, img: 'ცომეულობა.png', subItems: [{ name: 'ხაჭაპური მეგრული', size: '', price: '22.00 ₾' },{ name: 'ხაჭაპური იმერული', size: '', price: '20.00 ₾' },{ name: 'ხაჭაპური სამეფო', size: '', price: '28.00 ₾' },{ name: 'ხაჭაპური შამფურზე', size: '', price: '15.00 ₾' },{ name: 'აჭარული ხაჭაპური', size: '', price: '16.00 ₾' },{ name: 'აჭაპური ლობიანი', size: '', price: '14.00 ₾' },{ name: 'ლობიანი', size: '', price: '14.00 ₾' },{ name: 'პიცა პეპერონი', size: '', price: '20.00 ₾' },{ name: 'პიცა მარგარიტა', size: '', price: '18.00 ₾' },{ name: 'პიცა პროშუტო ფუნგი', size: '', price: '22.00 ₾' },{ name: 'მჭადი', size: '', price: '3.00 ₾' },{ name: 'ჭვიშტარი', size: '', price: '8.00 ₾' },{ name: 'ღომი', size: '', price: '4.00 ₾' },{ name: 'ელარჯი', size: '', price: '18.00 ₾' },{ name: 'საფირმო ღომის დაფა', size: '', price: '99.00 ₾' },{ name: 'ვარენიკი', size: '', price: '2.00 ₾' },{ name: 'შავი პური', size: '', price: '3.00 ₾' },{ name: 'შოთის პური', size: '', price: '2.50 ₾' }] },
@@ -222,7 +243,6 @@
         { id: 'desserts', cat: 'desserts', name: 'დესერტები', desc: 'დესერტები', price: '', popular: false, img: 'დესერტი.png', subItems: [{ name: 'ხილის ასორტი სეზონური', size: '', price: '25.00 ₾' },{ name: 'ნაყინი', size: '', price: '6.00 ₾' },{ name: 'ბელგიური ვაფლი', size: '', price: '10.00 ₾' },{ name: 'ბრაუნი', size: '', price: '12.00 ₾' }] }
       ];
 
-      // Translation maps for menu names (EN, RU) - keep English and Russian translations for category names and item names
       const menuNameMap = { en: {}, ru: {} };
       const enNames = { 'თევზეულობა':'Fish', 'ცომეულობა':'Pastry', 'ხინკალი/ვარენიკი':'Khinkali/Varenyky', 'ლუდი':'Beer', 'გარნირი':'Side dishes', 'ჩამოსასხმელი ლუდი':'Draft Beer', 'გამაგრილებელი სასმელები':'Soft Drinks', 'თეთრი ღვინო':'White Wine', 'წითელი ღვინო':'Red Wine', 'ჩაი, ყავა':'Tea, Coffee', 'კერძები მაყალიდან':'Grill Dishes', 'ქათმის სტეიკი':'Chicken Steak', 'სალათი':'Salad', 'სოუსი':'Sauce', 'დილის საუზმეული':'Morning Breakfast', 'ცხელი საუზმეული':'Hot Breakfast', 'ცივი კერძები':'Cold Dishes', 'წვნიანი კერძები':'Soups', 'სადილის კერძები':'Dinner Dishes', 'არაყი/ჭაჭა':'Vodka/Chacha', 'კონიაკი':'Cognac', 'მისაყოლებელი':'Snacks', 'ვისკი/რომი/ჯინი':'Whisky/Rum/Gin', 'ტეკილა/ვერმუტი/ლიქიორი':'Tequila/Vermouth/Liqueur', 'კოქტეილი':'Cocktails', 'დესერტები':'Desserts' };
       const ruNames = { 'თევზეულობა':'Рыба', 'ცომეულობა':'Выпечка', 'ხინკალი/ვარენიკი':'Хинкали/Вареники', 'ლუდი':'Пиво', 'გარნირი':'Гарниры', 'ჩამოსასხმელი ლუდი':'Разливное пиво', 'გამაგრილებელი სასმელები':'Напитки', 'თეთრი ღვინო':'Белое вино', 'წითელი ღვინო':'Красное вино', 'ჩაი, ყავა':'Чай, кофе', 'კერძები მაყალიდან':'Блюда с гриля', 'ქათმის სტეიკი':'Куриный стейк', 'სალათი':'Салат', 'სოუსი':'Соус', 'დილის საუზმეული':'Завтрак', 'ცხელი საუზმეული':'Горячий завтрак', 'ცივი კერძები':'Холодные блюда', 'წვნიანი კერძები':'Супы', 'სადილის კერძები':'Обеденные блюда', 'არაყი/ჭაჭა':'Водка/Чача', 'კონიაკი':'Коньяк', 'მისაყოლებელი':'Закуски', 'ვისკი/რომი/ჯინი':'Виски/Ром/Джин', 'ტეკილა/ვერმუტი/ლიქიორი':'Текила/Вермут/Ликёр', 'კოქტეილი':'Коктейли', 'დესერტები':'Десерты' };
@@ -232,12 +252,15 @@
       let currentLang = 'ka';
       let activeCategory = 'all';
 
+      // შეცვლილია: ამოღებულია ?. სინტაქსი, რომელიც ძველ მობილურებზე პრობლემას ქმნიდა
       function getTranslatedMenuItem(item, lang) {
-        if (lang === 'ka') return { ...item, subItems: item.subItems?.map(s => ({ ...s, name: s.name })) };
-        const name = menuNameMap[lang]?.[item.name] || item.name;
-        // keep subitems in original Georgian for simplicity (they are dish names)
-        const subItems = item.subItems?.map(s => ({ ...s, name: s.name }));
-        return { ...item, name, subItems };
+        if (lang === 'ka') {
+          const subItemsKa = item.subItems ? item.subItems.map(s => ({ ...s, name: s.name })) : undefined;
+          return { ...item, subItems: subItemsKa };
+        }
+        const name = (menuNameMap[lang] && menuNameMap[lang][item.name]) ? menuNameMap[lang][item.name] : item.name;
+        const subItemsOther = item.subItems ? item.subItems.map(s => ({ ...s, name: s.name })) : undefined;
+        return { ...item, name: name, subItems: subItemsOther };
       }
 
       function renderCategoryButtons(lang) {
@@ -267,7 +290,6 @@
         if (!grid) return;
         grid.innerHTML = filtered.map(item => {
           const tItem = getTranslatedMenuItem(item, lang);
-          // Original image filenames, no fallback replacement (keep as is)
           const imgTag = `<img src="${tItem.img}" alt="${tItem.name}" class="menu-img">`;
           if (tItem.subItems && tItem.subItems.length) {
             const subList = tItem.subItems.map(sub => `<li class="draft-item"><span class="draft-brand">${sub.name}</span><span class="draft-size">${sub.size}</span><span class="draft-price">${sub.price}</span></li>`).join('');
@@ -318,9 +340,9 @@
         const saved = localStorage.getItem('beerhouse_lang');
         if (saved && ['ka','en','ru'].includes(saved)) {
           currentLang = saved;
-          document.querySelector(`.lang-btn[data-lang="${saved}"]`).classList.add('active');
           document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-          document.querySelector(`.lang-btn[data-lang="${saved}"]`).classList.add('active');
+          const activeBtn = document.querySelector(`.lang-btn[data-lang="${saved}"]`);
+          if(activeBtn) activeBtn.classList.add('active');
         }
         updateUIForLang(currentLang);
       }
@@ -338,16 +360,31 @@
         else navbar.classList.remove('scrolled');
       });
 
-      document.getElementById('logoLink').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('hero').scrollIntoView({ behavior: 'smooth' }); document.getElementById('navLinks')?.classList.remove('show'); });
-      document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('show'));
+      // შეცვლილია: უსაფრთხო მიმართვები ღილაკებზე
+      document.getElementById('logoLink').addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        document.getElementById('hero').scrollIntoView({ behavior: 'smooth' }); 
+        const navLinks = document.getElementById('navLinks');
+        if(navLinks) navLinks.classList.remove('show'); 
+      });
+      document.getElementById('menuToggle').addEventListener('click', () => {
+          const navLinks = document.getElementById('navLinks');
+          if(navLinks) navLinks.classList.toggle('show');
+      });
       document.querySelectorAll('#navLinks a').forEach(link => {
         link.addEventListener('click', (e) => {
-          document.getElementById('navLinks').classList.remove('show');
+          const navLinks = document.getElementById('navLinks');
+          if(navLinks) navLinks.classList.remove('show');
           const target = document.querySelector(link.getAttribute('href'));
           if (target && link.getAttribute('href').startsWith('#')) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
         });
       });
-      document.querySelectorAll('.fade-target').forEach(el => new IntersectionObserver(entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')), { threshold: 0.15 }).observe(el));
+
+      // შეცვლილია threshold: 0.05 რათა მობილურზე სქროლვისას მენიუმ უშეცდომოდ იგრძნოს ეკრანზე გამოჩენა
+      document.querySelectorAll('.fade-target').forEach(el => new IntersectionObserver(entries => entries.forEach(e => {
+          if(e.isIntersecting) e.target.classList.add('visible');
+      }), { threshold: 0.05 }).observe(el));
+
       setInterval(() => { if (currentLang) updateUIForLang(currentLang); }, 60000);
     })();
   </script>
