@@ -1,0 +1,10 @@
+print("Name And Surname: Saba Gvasalia")
+print("Name And Surname: Natia Winamdzxvrishvili")
+print("Name And Surname: Xarebava Tinatini")
+print("Name And Surname: Ilia Gvasalia")
+print("Name And Surname: Sopo Gvasalia")
+print("Name And Surname:  Giorgi Gvasalia") 
+print("Name And Surname: Ana Gvasalia")
+print("Name And Surname: Luka Xristoforov")
+print("Name And Surname: Giorgi Winamdzxvrishvili")
+print("Name And Surname: Mamuka Gvasalia")        # 10 ცვლადი სრული სახელი გვარი + ოჯახის
